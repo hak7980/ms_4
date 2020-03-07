@@ -1,0 +1,198 @@
+---
+title: "Data Gather and Process"
+author: "Hamid Khan"
+date: "03/06/2020"
+output: html_document
+---
+
+
+Set Eval=FALSE to Eval=TRUE in order to complete data gathering and processing. The process may take several hours. 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r library install, eval=FALSE}
+
+ssc.install("yaml")
+
+ssc.install("tidyverse")
+
+ssc.install("janitor")
+
+ssc.install("yorkr")
+
+ssc.install("base")
+
+ssc.install("Rcpp")
+
+````
+
+
+```{r library setup, include=FALSE}
+
+library(yaml)
+
+library(tidyverse)
+
+library(janitor)
+
+library(yorkr)
+
+library(yaml)
+
+library(base)
+
+library(Rcpp)
+
+```
+
+```{r data set-up, eval= FALSE, include=FALSE}
+
+# Saving Links for Match Files
+
+t20_url <- "https://cricsheet.org/downloads/t20s_male.zip"
+
+odi_url <- "https://cricsheet.org/downloads/odis_male.zip"
+
+# Creating Directories for File Input and Output
+
+dir.create("raw-data")
+
+dir.create("raw-data/t20")
+
+dir.create("raw-data/odi")
+
+dir.create("output/t20")
+
+dir.create("output/odi")
+
+# Downloading files in directories
+
+download.file(odi_url, "raw-data/odi.zip")
+
+download.file(odi_url, "raw-data/t20.zip")
+
+# Unzipping files into appropriate directories
+
+t20_zip <- "raw-data/t20.zip"
+
+t20_dir <- "raw-data/t20"
+
+unzip(t20_zip,exdir=t20_dir)
+
+odi_zip <- "raw-data/odi.zip"
+
+odi_dir <-"raw-data/odi"
+
+unzip(odi_zip,exdir=odi_dir)
+
+```
+
+
+
+```{r converting T20, eval=FALSE, include=FALSE}
+
+# Storing all the T20 files as a list in the 
+# raw-data files 
+
+files <- list.files(path="raw-data/t20", pattern="*.yaml",
+                    
+                    full.names=TRUE, recursive=FALSE)
+
+# Using the convertYaml2Rdata frame to convert the
+# yaml list of lists of T20 matches into a Rdata frame
+
+lapply(files, function(x) {
+  
+    try(
+      
+      convertYaml2RDataframeT20(x, ".", "./output/t20")
+    )
+      
+})
+
+```
+
+```{r converting ODI, eval=FALSE, include=FALSE}
+
+# Storing all the ODI files as a list in the 
+# raw-data files 
+
+files <- list.files(path="raw-data/odi", pattern="*.yaml",
+                    
+                    full.names=TRUE, recursive=FALSE)
+
+# Using the convertYaml2Rdata frame to convert the
+# yaml list of lists of T20 matches into a Rdata frame
+
+lapply(files, function(x) {
+  
+    try(
+      
+      convertYaml2RDataframeT20(x, ".", "./output/odi")
+    )
+      
+})
+
+```
+
+
+
+```{r creating T20 meta file, include=FALSE}
+
+# Storing the dir of the t20 RData files as path
+# and then as a list called files
+
+path <- "output/t20/"
+
+files <- list.files(path=path)
+
+# Changing working directory to output directory
+
+setwd(path)
+
+# Loading all the T20 RData sets into RStudio and
+# then binding them
+
+results <- 
+  
+  sapply(files, function(x) mget(load(x)), simplify = TRUE) 
+
+results <- bind_rows(results, .id = "column_label")
+
+# Saving the meta file as t20metadata
+
+save(results, file =  "raw-data/t20metadata.RData")
+
+```
+
+```{r creating ODI meta file, include=FALSE}
+
+
+# Storing the dir of the ODI RData files as path
+# and then as a list called files
+
+path <- "output/odi/"
+
+files <- list.files(path=path)
+
+# Changing working directory to output directory
+
+setwd(path)
+
+# Loading all the ODI RData sets into RStudio and
+# then binding them
+
+results <- 
+  
+  sapply(files, function(x) mget(load(x)), simplify = TRUE) 
+
+results <- bind_rows(results, .id = "column_label")
+
+# Saving the meta file as odimetadata
+
+save(results, file =  "raw-data/odimetadata.RData")
+
+```
+

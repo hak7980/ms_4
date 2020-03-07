@@ -1,0 +1,51 @@
+---
+title: "ms_4"
+author: "Hamid Khan"
+date: "03/06/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Background
+
+Hello! Welcome to my final project for GOV - 1005, where I analyze granular data on over a thousand cricket matches to glean interesting insights about the leading cricketers and their teams. 
+
+I chose to focus my analysis on cricket because I am from Pakistan and have been an avid follower of the sport for over a decade. In college, I find it hard to follow the game as much as I would like to, so this project is a way for me to further explore and contribute to cricket, a sport that is an important part of my life. 
+
+## Data
+
+The primary data source used in this project is from [cricsheet.org](cricsheet.org). The website has compiled ball-by-ball data on over 5000 cricket matches. The cricket data is grouped according to gender and then further divided based on the match format. In this project, I used the yaml files for the following two match types: 
+
+i) [One Day Internationals](https://cricsheet.org/downloads/odis_male.zip)
+
+ii) [T20 Internationals](https://cricsheet.org/downloads/t20s_male.zip)
+
+Using the [yorkr](https://cran.r-project.org/web/packages/yorkr/yorkr.pdf) package, I first converted the yaml files that contained the commentary data into .RData files. I then compiled the separate RData files into two seperate meta-datasets, one for each format.The [first](https://github.com/hak7980/Final-Project---GOV---1005/blob/master/raw-data/odimetadata.RData) of there contains information on 1298 One Day Internationals and the [second](https://github.com/hak7980/Final-Project---GOV---1005/blob/master/raw-data/t20metadata.RData) contains information on 528 T20 Internationals. 
+
+All the data analysis is conducted using information from these two datasets. 
+
+## Data Gathering and Processing
+
+In my github repo for ms_4 I have included a data_code file using which does the following:
+
+i) It creates sub-directories within whatever directory is being used and downloads and unzips the match data for t20 and odi internationals into the appopriate directories.
+
+ii) It then converts all the match data from the yaml file format into the Rdata form as separate files.
+
+iii) Then, it merges all the Rdata files of the matches into two large Rdata files that contain the ball by ball data for all t20 and odi matches sorted separately. 
+
+I feel that this process was important because cricket matches are being played every other day and the code that I have not included automates the entire process. Hence, whenever the data_code RMD file is run the latest match data is exported straight from the website and converted into the approproate file format. 
+
+**NOTE:** I have set most of the commans in the data_code rmd as eval=FALSE because knitting the files takes several hours on my computer
+
+## Future Steps
+
+The only problem that I have encountered throughout the process so far is that some t20 and odi files are not converting due to a mismatch of the columns in those files. 
+
+The next step for me, therefore, is to modify the function that I use to convert the yaml files into Rdata files such that it accounts for this change in columns and converts all files. This is important because only then will I have a complete dataset on which I can conduct an analysis. 
+
+Github repo link: https://github.com/hak7980/ms_4.git
+
